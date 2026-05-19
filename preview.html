@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Đề Thi Trắc Nghiệm - Ma Trận Nghịch Đảo</title>
+
+  <!-- MathJax -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['\\(', '\\)']],
+        displayMath: [['\\[', '\\]']]
+      }
+    };
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <style>
+    body{
+      font-family: Arial, sans-serif;
+      background:#f4f7fb;
+      margin:0;
+      padding:20px;
+      line-height:1.6;
+    }
+
+    .container{
+      max-width:1100px;
+      margin:auto;
+    }
+
+    h1{
+      text-align:center;
+      color:#124ea2;
+    }
+
+    .section-title{
+      background:#124ea2;
+      color:white;
+      padding:12px;
+      border-radius:10px;
+      margin-top:40px;
+    }
+
+    .question{
+      background:white;
+      padding:20px;
+      margin:20px 0;
+      border-radius:12px;
+      box-shadow:0 4px 10px rgba(0,0,0,0.08);
+    }
+
+    .question h3{
+      color:#124ea2;
+    }
+
+    .option{
+      border:2px solid #d0d7e2;
+      padding:12px;
+      border-radius:10px;
+      margin:10px 0;
+      cursor:pointer;
+      transition:0.3s;
+    }
+
+    .option:hover{
+      background:#eef4ff;
+    }
+
+    .correct{
+      background:#c8ffd8 !important;
+      border-color:green !important;
+      color:#006400;
+      font-weight:bold;
+    }
+
+    .wrong{
+      background:#ffd1d1 !important;
+      border-color:red !important;
+      color:#8b0000;
+      font-weight:bold;
+    }
+
+    .explanation{
+      margin-top:15px;
+      background:#fff9d9;
+      border-left:6px solid #e0b000;
+      padding:12px;
+      border-radius:8px;
+      display:none;
+    }
+
+    .score-box{
+      position:sticky;
+      top:10px;
+      background:white;
+      padding:15px;
+      border-radius:12px;
+      margin-bottom:20px;
+      box-shadow:0 4px 10px rgba(0,0,0,0.1);
+      text-align:center;
+      font-size:20px;
+      font-weight:bold;
+      color:#124ea2;
+    }
+
+    .download-btn{
+      display:block;
+      width:250px;
+      margin:30px auto;
+      padding:15px;
+      text-align:center;
+      background:#124ea2;
+      color:white;
+      border:none;
+      border-radius:12px;
+      font-size:18px;
+      cursor:pointer;
+    }
+
+    .download-btn:hover{
+      background:#0d3d82;
+    }
+
+    .difficulty{
+      padding:5px 12px;
+      border-radius:20px;
+      color:white;
+      font-size:14px;
+      display:inline-block;
+      margin-bottom:10px;
+    }
+
+    .easy{
+      background:green;
+    }
+
+    .medium{
+      background:orange;
+    }
+
+    .hard{
+      background:red;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <h1>ĐỀ THI TRẮC NGHIỆM TƯƠNG TÁC<br>MA TRẬN NGHỊCH ĐẢO</h1>
+
+  <div class="score-box">
+    Điểm hiện tại: <span id="score">0</span> / 20
+  </div>
+
+  <div id="quiz"></div>
+
+  <button class="download-btn" onclick="downloadHTML()">
+    Tải File HTML
+  </button>
+
+</div>
+
+<script>
+
+const questions = [
+
+  // ==========================
+  // 5 CÂU LÝ THUYẾT
+  // ==========================
+
+  {
+    type:"Lý thuyết",
+    difficulty:"easy",
+    q:"Điều kiện để ma trận vuông \\(A\\) có ma trận nghịch đảo là gì?",
+    options:[
+      "\\(\\det(A)=0\\)",
+      "\\(\\det(A)\\neq 0\\)",
+      "\\(A\\) là ma trận tam giác",
+      "\\(A\\) có phần tử bằng 1"
+    ],
+    answer:1,
+    explain:"Ma trận chỉ khả nghịch khi định thức khác 0.",
+    tip:"MẸO: Thấy câu hỏi 'có nghịch đảo không' → nghĩ ngay tới định thức."
+  },
+
+  {
+    type:"Lý thuyết",
+    difficulty:"easy",
+    q:"Công thức đúng của nghịch đảo tích là:",
+    options:[
+      "\\((AB)^{-1}=A^{-1}B^{-1}\\)",
+      "\\((AB)^{-1}=AB\\)",
+      "\\((AB)^{-1}=B^{-1}A^{-1}\\)",
+      "\\((AB)^{-1}=A+B\\)"
+    ],
+    answer:2,
+    explain:"Khi lấy nghịch đảo của tích phải đảo ngược thứ tự.",
+    tip:"MẸO: 'Mang giày rồi mang tất' → tháo ra phải ngược lại."
+  },
+
+  {
+    type:"Lý thuyết",
+    difficulty:"easy",
+    q:"Ma trận đơn vị cấp 2 là:",
+    options:[
+      "\\(\\begin{pmatrix}1&1\\\\1&1\\end{pmatrix}\\)",
+      "\\(\\begin{pmatrix}0&1\\\\1&0\\end{pmatrix}\\)",
+      "\\(\\begin{pmatrix}1&0\\\\0&1\\end{pmatrix}\\)",
+      "\\(\\begin{pmatrix}2&0\\\\0&2\\end{pmatrix}\\)"
+    ],
+    answer:2,
+    explain:"Ma trận đơn vị có 1 trên đường chéo chính và 0 ở ngoài.",
+    tip:"MẸO: Đường chéo chính toàn số 1."
+  },
+
+  {
+    type:"Lý thuyết",
+    difficulty:"easy",
+    q:"Phương pháp nào dùng ma trận mở rộng \\([A|I]\\) ?",
+    options:[
+      "Cramer",
+      "Gauss-Jordan",
+      "Sarrus",
+      "Khai triển Laplace"
+    ],
+    answer:1,
+    explain:"Gauss-Jordan ghép ma trận với ma trận đơn vị rồi biến đổi hàng.",
+    tip:"MẸO: Thấy \\([A|I]\\) → Gauss-Jordan."
+  },
+
+  {
+    type:"Lý thuyết",
+    difficulty:"easy",
+    q:"Nếu \\(\\det(A)=0\\) thì:",
+    options:[
+      "A có nghịch đảo",
+      "A là ma trận đơn vị",
+      "A suy biến",
+      "A đối xứng"
+    ],
+    answer:2,
+    explain:"Định thức bằng 0 nghĩa là ma trận suy biến.",
+    tip:"MẸO: det = 0 → KHÔNG khả nghịch."
+  },
+
+  // ==========================
+  // 5 CÂU DỄ
+  // ==========================
+
+  {
+    type:"Bài tập",
+    difficulty:"easy",
+    q:"Tính \\(\\det\\left(\\begin{pmatrix}2&1\\\\3&4\\end{pmatrix}\\right)\\)",
+    options:["5","8","-5","11"],
+    answer:0,
+    explain:"\\(\\det=2\\cdot4-1\\cdot3=8-3=5\\)",
+    tip:"MẸO: Ma trận 2x2 → ad-bc."
+  },
+
+  {
+    type:"Bài tập",
+    difficulty:"easy",
+    q:"Tìm nghịch đảo của \\(A=\\begin{pmatrix}1&0\\\\0&1\\end{pmatrix}\\)",
+    options:[
+      "\\(A^{-1}=0\\)",
+      "\\(A^{-1}=A\\)",
+      "\\(A^{-1}=-A\\)",
+      "Không tồn tại"
+    ],
+    answer:1,
+    explain:"Ma trận đơn vị nghịch đảo chính nó.",
+    tip:"MẸO: \\(I^{-1}=I\\)"
+  },
+
+  {
+    type:"Bài tập",
+    difficulty:"easy",
+    q:"Cho \\(A=\\begin{pmatrix}2&0\\\\0&3\\end{pmatrix}\\). \\(A^{-1}\\) là:",
+    options:[
+      "\\(\\begin{pmatrix}2&0\\\\0&3\\end{pmatrix}\\)",
+      "\\(\\begin{pmatrix}\\frac12&0\\\\0&\\frac13\\end{pmatrix}\\)",
+      "\\(\\begin{pmatrix}3&0\\\\0&2\\end{pmatrix}\\)",
+      "Không tồn tại"
+    ],
+    answer:1,
+    explain:"Ma trận chéo: chỉ cần lấy nghịch đảo từng phần tử đường chéo.",
+    tip:"MẸO: Ma trận chéo rất dễ invert."
+  },
+
+  {
+    type:"Bài tập",
+    difficulty:"easy",
+    q:"Tính \\(\\det\\left(\\begin{pmatrix}1&2\\\\2&4\\end{pmatrix}\\right)\\)",
+    options:["0","2","4","-2"],
+    answer:0,
+    explain:"\\(1\\cdot4-2\\cdot2=4-4=0\\)",
+    tip:"MẸO: Hai hàng tỉ lệ → det = 0."
+  },
+
+  {
+    type:"Bài tập",
+    difficulty:"easy",
+    q:"Nếu \\(A^{-1}=A\\) thì \\(A\\) gọi là:",
+    options:[
+      "Ma trận suy biến",
+      "Ma trận đối xứng",
+      "Ma trận tự nghịch đảo",
+      "Ma trận tam giác"
+    ],
+    answer:2,
+    explain:"Ma trận bằng nghịch đảo của chính nó gọi là tự nghịch đảo.",
+    tip:"MẸO: \\(A=A^{-1}\\)"
+  },
+
+  // ==========================
+  // 5 CÂU TRUNG BÌNH
+  // ==========================
+
+  {
+    type:"Bài tập",
+    difficulty:"medium",
+    q:"Tìm \\(A^{-1}\\) với \\(A=\\begin{pmatrix}1&2\\\\3&4\\end{pmatrix}\\)",
+    options:[
+      "\\(\\begin{pmatrix}-2&1\\\\\\frac32&-\\frac12\\end{pmatrix}\\)",
+      "\\(\\begin{pmatrix}2&1\\\\3&4\\end{pmatrix}\\)",
+      "\\(\\begin{pmatrix}-2&2\\\\1&-1\\end{pmatrix}\\)",
+      "Không tồn tại"
+    ],
+    answer:0,
+    explain:"\\(A^{-1}=\\frac1{-2}\\begin{pmatrix}4&-2\\\\-3&1\\end{pmatrix}\\)",
+    tip:"MẸO: Đổi chỗ a,d rồi đổi dấu b,c."
+  },
+
+  {
+    type:"Bài tập",
+    difficulty:"medium",
+    q:"Cho \\(A=\\begin{pmatrix}3&1\\\\5&2\\end{pmatrix}\\). \\(\\det(A)\\) bằng:",
+    options:["1","2","5","-1"],
+    answer:0,
+    explain:"\\(3\\cdot2-1\\cdot5=1\\)",
+    tip:"MẸO: ad-bc."
+  },
+
+  {
+    type:"Bài tập",
+    difficulty:"medium",
+    q:"Ma trận nào sau đây KHÔNG khả nghịch?",
+    options:[
+      "\\(\\begin{pmatrix}1&2\\\\3&5\\end{pmatrix}\\)",
+      "\\(\\begin{pmatrix}2&1\\\\4&2\\end{pmatrix}\\)",
+      "\\(\\begin{pmatrix}1&0\\\\0&1\\end{pmatrix}\\)",
+      "\\(\\begin{pmatrix}3&2\\\\1&1\\end{pmatrix}\\)"
+    ],
+    answer:1,
+    explain:"\\(2\\cdot2-1\\cdot4=0\\)",
+    tip:"MẸO: Hàng tỉ lệ thường không khả nghịch."
+  },
+
+  {
+    type:"Bài tập",
+    difficulty:"medium",
+    q:"Nếu \\(A^{-1}=\\begin{pmatrix}2&0\\\\0&5\\end{pmatrix}\\) thì \\(A\\) là:",
+    options:[
+      "\\(\\begin{pmatrix}\\frac12&0\\\\0&\\frac15\\end{pmatrix}\\)",
+      "\\(\\begin{pmatrix}2&0\\\\0&5\\end{pmatrix}\\)",
+      "\\(\\begin{pmatrix}5&0\\\\0&2\\end{pmatrix}\\)",
+      "Không xác định"
+    ],
+    answer:0,
+    explain:"Lấy nghịch đảo từng phần tử.",
+    tip:"MẸO: \\((A^{-1})^{-1}=A\\)"
+  },
+
+  {
+    type:"Bài tập",
+    difficulty:"medium",
+    q:"Giải hệ: \\(\\begin{cases}x+y=3\\\\x-y=1\\end{cases}\\)",
+    options:[
+      "\\((1,2)\\)",
+      "\\((2,1)\\)",
+      "\\((3,0)\\)",
+      "\\((0,3)\\)"
+    ],
+    answer:1,
+    explain:"Cộng hai phương trình được \\(2x=4\\Rightarrow x=2\\), suy ra \\(y=1\\).",
+    tip:"MẸO: Hệ đơn giản có thể cộng trừ nhanh."
+  },
+
+  // ==========================
+  // 5 CÂU KHÓ
+  // ==========================
+
+  {
+    type:"Bài tập",
+    difficulty:"hard",
+    q:"Cho \\(A=\\begin{pmatrix}1&2&0\\\\-1&1&3\\\\2&-1&1\\end{pmatrix}\\). \\(\\det(A)\\) bằng:",
+    options:["18","9","12","6"],
+    answer:0,
+    explain:"Theo quy tắc Sarrus: \\(18\\).",
+    tip:"MẸO: Sarrus chỉ dùng cho ma trận 3x3."
+  },
+
+  {
+    type:"Bài tập",
+    difficulty:"hard",
+    q:"Nếu \\(A^2=A\\) và \\(A\\) khả nghịch thì:",
+    options:[
+      "\\(A=0\\)",
+      "\\(A=I\\)",
+      "\\(A=-I\\)",
+      "\\(A\\) không tồn tại"
+    ],
+    answer:1,
+    explain:"Nhân hai vế với \\(A^{-1}\\): \\(A=I\\).",
+    tip:"MẸO: Ma trận khả nghịch → có thể nhân với nghịch đảo."
+  },
+
+  {
+    type:"Bài tập",
+    difficulty:"hard",
+    q:"Cho \\(A=\\begin{pmatrix}x&2\\\\1&x\\end{pmatrix}\\). Điều kiện để A không có nghịch đảo là:",
+    options:[
+      "\\(x=2\\)",
+      "\\(x=-2\\)",
+      "\\(x=\\pm\\sqrt2\\)",
+      "\\(x=0\\)"
+    ],
+    answer:2,
+    explain:"\\(\\det=x^2-2=0\\Rightarrow x=\\pm\\sqrt2\\)",
+    tip:"MẸO: Không khả nghịch ↔ det = 0."
+  },
+
+  {
+    type:"Bài tập",
+    difficulty:"hard",
+    q:"Nếu \\(\\det(A)=5\\) thì \\(\\det(A^{-1})\\) bằng:",
+    options:[
+      "5",
+      "\\(-5\\)",
+      "\\(\\frac15\\)",
+      "25"
+    ],
+    answer:2,
+    explain:"\\(\\det(A^{-1})=\\frac1{\\det(A)}\\)",
+    tip:"MẸO: det nghịch đảo = nghịch đảo det."
+  },
+
+  {
+    type:"Bài tập",
+    difficulty:"hard",
+    q:"Cho \\((AB)^{-1}=\\begin{pmatrix}1&0\\\\0&2\\end{pmatrix}\\), biết \\(A^{-1}=\\begin{pmatrix}1&1\\\\0&1\\end{pmatrix}\\). Công thức đúng để tìm \\(B^{-1}\\) là:",
+    options:[
+      "\\(B^{-1}=(AB)^{-1}A\\)",
+      "\\(B^{-1}=A(AB)^{-1}\\)",
+      "\\(B^{-1}=A^{-1}(AB)^{-1}\\)",
+      "\\(B^{-1}=B(AB)^{-1}\\)"
+    ],
+    answer:0,
+    explain:"Từ \\((AB)^{-1}=B^{-1}A^{-1}\\Rightarrow B^{-1}=(AB)^{-1}A\\)",
+    tip:"MẸO: Luôn nhớ đảo thứ tự."
+  }
+
+];
+
+let score = 0;
+let answered = 0;
+
+const quiz = document.getElementById("quiz");
+
+questions.forEach((q,index)=>{
+
+  const div = document.createElement("div");
+  div.className = "question";
+
+  let diffClass = q.difficulty;
+
+  div.innerHTML = `
+    <div class="difficulty ${diffClass}">
+      ${q.difficulty.toUpperCase()}
+    </div>
+
+    <h3>Câu ${index+1} (${q.type})</h3>
+
+    <p>${q.q}</p>
+
+    <div class="options"></div>
+
+    <div class="explanation">
+      <b>Đáp án đúng:</b> ${q.options[q.answer]}<br><br>
+      <b>Giải thích:</b> ${q.explain}<br><br>
+      <b>${q.tip}</b>
+    </div>
+  `;
+
+  const optionsDiv = div.querySelector(".options");
+  const explanation = div.querySelector(".explanation");
+
+  q.options.forEach((opt,i)=>{
+
+    const btn = document.createElement("div");
+    btn.className = "option";
+    btn.innerHTML = opt;
+
+    btn.onclick = ()=>{
+
+      if(div.classList.contains("done")) return;
+
+      div.classList.add("done");
+
+      const allOptions = optionsDiv.querySelectorAll(".option");
+
+      allOptions[q.answer].classList.add("correct");
+
+      if(i===q.answer){
+        btn.classList.add("correct");
+        score++;
+      }else{
+        btn.classList.add("wrong");
+      }
+
+      document.getElementById("score").innerText = score;
+
+      explanation.style.display="block";
+
+      MathJax.typesetPromise();
+    };
+
+    optionsDiv.appendChild(btn);
+
+  });
+
+  quiz.appendChild(div);
+
+});
+
+MathJax.typesetPromise();
+
+function downloadHTML(){
+
+  const htmlContent = document.documentElement.outerHTML;
+
+  const blob = new Blob([htmlContent], {type:"text/html"});
+
+  const a = document.createElement("a");
+
+  a.href = URL.createObjectURL(blob);
+
+  a.download = "de-thi-ma-tran-nghich-dao.html";
+
+  a.click();
+}
+
+</script>
+
+</body>
+</html>
